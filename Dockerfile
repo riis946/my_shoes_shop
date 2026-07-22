@@ -1,6 +1,6 @@
 FROM php:8.4-apache
 
-# Installation des dépendances système et des extensions PHP nécessaires
+# Installation des dépendances système et des extensions PHP
 RUN apt-get update && apt-get install -y \
     git unzip libpq-dev libicu-dev \
     && docker-php-ext-install pdo pdo_pgsql intl opcache
@@ -21,5 +21,8 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Création du dossier var S'IL N'EXISTE PAS + configuration des permissions
+# Création du dossier var et permissions
 RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var
+
+# Exécution automatique des migrations au démarrage du serveur
+CMD php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration && apache2-foreground
