@@ -8,12 +8,12 @@ RUN apt-get update && apt-get install -y \
 # Activation du module rewrite d'Apache
 RUN a2enmod rewrite
 
-# Configuration du document root Apache vers le dossier public/ de Symfony
+# Configuration du document root Apache vers public/
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/conf-available/*.conf
 
-# Copie du code du projet
+# Copie du projet
 WORKDIR /var/www/html
 COPY . .
 
@@ -21,5 +21,5 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Création du dossier var s'il n'existe pas et attribution des permissions
+# Création du dossier var S'IL N'EXISTE PAS + configuration des permissions
 RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var
