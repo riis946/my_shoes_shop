@@ -21,5 +21,5 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Configuration des permissions
-RUN chown -R www-data:www-data /var/www/html/var
+# Création du dossier var s'il n'existe pas et attribution des permissions
+RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var
