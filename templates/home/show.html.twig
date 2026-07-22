@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ asset('uploads/products/' ~ product.image) }}" class="img-fluid rounded" alt="{{ product.name }}">
+        </div>
+        <div class="col-md-6">
+            <h2>{{ product.brand }} - {{ product.name }}</h2>
+            <h4 class="text-primary fs-3">{{ product.price }} €</h4>
+            <p class="mt-3">{{ product.description|raw }}</p>
+
+            <hr>
+
+            <form action="" method="POST" id="add-to-cart-form">
+                <label class="form-label font-weight-bold">Choisissez votre pointure :</label>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% for variant in product.productVariants %}
+                        {% if variant.stock > 0 %}
+                            <input type="radio" class="btn-check" name="variant_id" id="variant-{{ variant.id }}" value="{{ variant.id }}" required>
+                            <label class="btn btn-outline-dark" for="variant-{{ variant.id }}">
+                                EU {{ variant.size }} <small>({{ variant.stock }} dispo)</small>
+                            </label>
+                        {% else %}
+                            <button type="button" class="btn btn-outline-secondary disabled" disabled>EU {{ variant.size }} (Épuisé)</button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100">Ajouter au panier</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const selectedVariant = document.querySelector('input[name="variant_id"]:checked');
+        if (selectedVariant) {
+            window.location.href = "/panier/add/" + selectedVariant.value;
+        }
+    });
+</script>
+{% endblock %}

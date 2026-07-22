@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier - My Shoes Shop{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Mon Panier</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% if items|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Article</th>
+                        <th>Pointure</th>
+                        <th>Prix unitaire</th>
+                        <th>Quantité</th>
+                        <th>Sous-total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td class="d-flex align-items-center gap-3">
+                                <img src="{{ asset('uploads/products/' ~ item.variant.product.image) }}" alt="{{ item.variant.product.name }}" style="width: 60px; height: 60px; object-fit: cover;" class="rounded">
+                                <div>
+                                    <strong>{{ item.variant.product.brand }}</strong> - {{ item.variant.product.name }}
+                                </div>
+                            </td>
+                            <td><span class="badge bg-secondary">EU {{ item.variant.size }}</span></td>
+                            <td>{{ item.variant.product.price }} €</td>
+                            <td>{{ item.quantity }}</td>
+                            <td><strong>{{ item.subtotal }} €</strong></td>
+                            <td>
+                                <a href="{{ path('cart_remove', {id: item.variant.id}) }}" class="btn btn-outline-danger btn-sm">
+                                    Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-4 align-items-center">
+            <div class="col-md-6">
+                <a href="{{ path('app_home') }}" class="btn btn-outline-dark">← Continuer mes achats</a>
+            </div>
+            <div class="col-md-6 text-end">
+                <h3>Total : <span class="text-primary">{{ total }} €</span></h3>
+                <a href="{{ path('order_checkout') }}" class="btn btn-success btn-lg mt-2">Valider la commande</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center p-5">
+            <h4>Votre panier est vide 🛒</h4>
+            <p class="mb-3">Découvrez nos dernières paires de chaussures et trouvez votre pointure !</p>
+            <a href="{{ path('app_home') }}" class="btn btn-primary">Voir le catalogue</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
